@@ -397,6 +397,26 @@ def all_pot_water(edges, avg_epot, std_epot, avg_density, std_density, figure_fo
 
     return None
 
+def num_nitrate_in_stern(avg_no3_counts, std_no3_counts, figure_folder):
+    colors = ["#A27514", "#55bbbb", "#016e76", "#e6c352"]
+    markers = ['o', 's', '^', 'D']
+    fig, ax = plt.subplots(1,1, figsize=(3.25, 3.25), sharex=True, sharey=True)
+
+    cation_xlabels = [r'Cs$^+$', r'K$^+$', r'Na$^+$', r'Li$^+$']
+    xlist = [3, 2, 1, 0]
+
+    for j, pot in enumerate(potentials):
+        ax.scatter(xlist, avg_no3_counts[:, j], color=colors[j], marker=markers[j])
+        ax.errorbar(xlist, avg_no3_counts[:, j], yerr=std_no3_counts[:, j], fmt='o', color=colors[j], capsize=5)
+        ax.set_xlim(-0.5, 3.5)
+        ax.set_ylim(-0.5, 1.5)
+        ax.set_xticks(xlist)
+        ax.set_xticklabels(cation_xlabels, fontsize=12)
+        ax.set_ylabel("Number NO$_3^-$ in Stern Layer", fontsize=12)
+        ax.grid()
+    plt.tight_layout()
+    fig.savefig(f'{figure_folder}num-nitrate-stern-layer.tiff', dpi=300)
+
 def residence_time(figure_folder):
 
     adsorption_decay_avg = np.load(data_folder + "residence_time_analysis/adsorption_decay_avg.npy", allow_pickle=True)
@@ -781,6 +801,10 @@ def load_ionpairing(data_folder=data_folder):
     pmf_avg = np.empty((len(cations),len(potentials), len(layers)+1), dtype=object)
     pmf_std = np.empty((len(cations),len(potentials), len(layers)+1), dtype=object)
 
+    num_no3 = np.empty((len(cations),len(potentials),len(reps)), dtype=object)
+    num_no3_avg = np.empty((len(cations),len(potentials)), dtype=object)
+    num_no3_std = np.empty((len(cations),len(potentials)), dtype=object)
+
     for i, cation in enumerate(cations):
         for j, potential in enumerate(potentials):
             for l, layer in enumerate(layers):
@@ -793,6 +817,9 @@ def load_ionpairing(data_folder=data_folder):
                     if l == 2:
                         rdf_b[i, j*len(reps)+k] = rdf[i,j,k,l]
 
+                    if l == 0:
+                        new_folder = f'{data_folder}{cation}/constant-potential/wca/{potential}/rep{rep}/layer-analysis/'
+                        num_no3[i,j,k] = np.load(f'{new_folder}no3_counts.npy', allow_pickle=True)[0]
 
                 rdf_avg[i,j,l] = np.mean([rdf[i,j,k,l] for k in range(len(reps))], axis=0)
                 rdf_std[i,j,l] = np.std([rdf[i,j,k,l] for k in range(len(reps))], axis=0)
@@ -800,13 +827,17 @@ def load_ionpairing(data_folder=data_folder):
                 pmf_avg[i,j,l] = np.mean([pmf_d[i,j,k,l] for k in range(len(reps))], axis=0)
                 pmf_std[i,j,l] = np.std([pmf_d[i,j,k,l] for k in range(len(reps))], axis=0)
 
+            # average number of nitrate in stern layer
+            num_no3_avg[i,j] = np.mean([num_no3[i,j,k] for k in range(len(reps))], axis=0)
+            num_no3_std[i,j] = np.std([num_no3[i,j,k] for k in range(len(reps))], axis=0)
+
     rdf_b_avg = np.empty((len(cations)), dtype=object)
     rdf_b_std = np.empty((len(cations)), dtype=object)
 
     for i, cation in enumerate(cations):
         rdf_b_avg[i] = np.mean([rdf_b[i,j] for j in range(rdf_b.shape[1])], axis=0)
         rdf_b_std[i] = np.std([rdf_b[i,j] for j in range(rdf_b.shape[1])], axis=0)
-    return bins, rdf_avg, rdf_std, pmf_avg, pmf_std, rdf_b_avg, rdf_b_std
+    return bins, rdf_avg, rdf_std, pmf_avg, pmf_std, rdf_b_avg, rdf_b_std, num_no3_avg, num_no3_std
 
 def read_and_plot_metal_comparison():
     cations = ['Cs', 'K', 'Na', 'Li']
@@ -973,7 +1004,7 @@ def main():
     load_density_param = 'wca'
     edges, avg_density, std_density, avg_pmf, std_pmf = load_density(load_density_param)
     avg_efield, std_efield,  avg_epot, std_epot, avg_cutoffs = load_electric_potential()
-    bins, rdf_avg, rdf_std, pmf_avg, pmf_std, rdf_b_avg, rdf_b_std = load_ionpairing()
+    bins, rdf_avg, rdf_std, pmf_avg, pmf_std, rdf_b_avg, rdf_b_std, num_no3_avg, num_no3_std = load_ionpairing()
 
     colors = ["#1c4f7e", "#E05656",  "#4db4e8", "#8d0a0e"]
     colors2 =  ["#A27514", "#55bbbb", "#016e76", "#e6c352"]
@@ -990,7 +1021,7 @@ def main():
     hydrogen_density_profiles(edges, avg_density, std_density, figure_folder, colors)
     one_pot_water_density(edges, avg_epot, std_epot, avg_density, std_density, figure_folder)
     all_pot_water(edges, avg_epot, std_epot, avg_density, std_density, figure_folder)
-    
+    num_nitrate_in_stern(num_no3_avg, num_no3_std, figure_folder)
     residence_time(figure_folder)
     inplane_diffusion(figure_folder)
     supporting_electrolyte(colors, figure_folder)
