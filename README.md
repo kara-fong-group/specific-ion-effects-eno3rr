@@ -1,4 +1,4 @@
-## Data Repositiory for {insert title and DOI here}
+## Data Repositiory for Beyond Interfacial Structure: Ion Transport Mediates Cation Effects in Electrochemical Nitrate Reduction -- {insert DOI}
 Authors: Madeline A. Murphy, Kara D. Fong
 Date:
 
