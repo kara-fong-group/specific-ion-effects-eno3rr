@@ -1,0 +1,103 @@
+#=========================================
+# Aqueous electrolyte with gold electrodes;
+# Constant potential MD
+#      Madeline Murphy and Kara Fong
+#=========================================
+
+# distribute electrode atoms among all processors:
+if "$(extract_setting(world_size) % 2) == 0" then "processors * * 2"
+
+# ----------------- Init Section -----------------
+
+units real
+timestep 1.0
+dimension 3
+atom_style full
+boundary p p p
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+bond_style harmonic
+angle_style harmonic
+dihedral_style  opls
+pair_style lj/cut/coul/long 10.0 10.0
+pair_modify shift yes mix arithmetic
+kspace_style pppm/electrode 1.0e-5
+
+# read in coordinate file
+read_restart "run2.restart"
+
+# import non-bonded (LJ) interaction parameters
+include "system.in.settings"
+
+# group by type
+group electrolyte type 1 2 3 4 5
+group gSPCE type  1  2
+group cation type 3
+group anion type 4 5
+group bot type 6
+group top type 7
+
+# constant potential electrodes
+fix conp bot electrode/conp 1.0 1.805132 couple top 0.0 symm on ffield yes etypes on write_inv ./inv.csv
+# fix conp bot electrode/conp 1.0 1.805132 couple top 0.0 symm on ffield yes etypes on read_inv ./inv.csv
+
+#==============
+# Output
+#==============
+
+###### Trajectory ######
+variable t equal step
+dump unwrapped all dcd 1000 traj_unwrapped_$t.dcd 
+dump_modify unwrapped unwrap yes 
+
+###### Electrode charge ######
+
+variable q atom q
+variable qz atom q*(z-lz/2)
+compute qtop top reduce sum v_q
+compute qbot bot reduce sum v_q
+compute qztop top reduce sum v_qz
+compute qzbot bot reduce sum v_qz
+compute ctemp electrolyte temp
+
+fix chg all ave/time 1 1 1 c_qbot c_qtop file total_charges.dat format " %.15e "
+
+# record individual charges
+dump topcharges top custom 1000 top-charges_$t.out id q
+dump botcharges bot custom 1000 bot-charges_$t.out id q
+
+###### Polarization ######
+# Store the initial atom positions
+fix initconfig all store/state 0 xu yu zu
+
+# The following steps calculate the polarization on the fly for the
+# water and ions.
+compute displ all displace/atom
+
+variable OmegaPxi atom (c_displ[1]+f_initconfig[1])*q #need the relatuve displacement wrt to initial configuration, not the position, as if the atom has wrapped around due
+variable OmegaPyi atom (c_displ[2]+f_initconfig[2])*q #to the periodic boundary conditions, using positions will make it seems as if the atom has a polarization in the opposite
+variable OmegaPzi atom (c_displ[3]+f_initconfig[3])*q #direction to the true value.
+
+compute OmegaPx all reduce sum v_OmegaPxi
+compute OmegaPy all reduce sum v_OmegaPyi
+compute OmegaPz all reduce sum v_OmegaPzi
+
+fix Pwatf  all  ave/time 1 1 1 c_OmegaPx  c_OmegaPy  c_OmegaPz  file Psolvent.profile format " %.15e " 
+
+#==============
+# NVT run
+#==============
+
+velocity electrolyte create 298 12345
+
+fix NVT electrolyte nvt temp 298 298 100.0
+   
+thermo_style custom step temp c_ctemp press vol density pe ke etotal fmax fnorm c_qztop c_qzbot spcpu cpuremain
+thermo_modify norm no flush yes
+thermo 1000
+
+restart 10000 run1.restart run2.restart
+run   2000000
+write_dump all xyz final_structure.xyz 
+write_data end.data
+
