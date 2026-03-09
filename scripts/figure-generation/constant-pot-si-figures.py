@@ -42,7 +42,7 @@ def electric_field(edges, avg_epot, std_epot, colors, figure_folder):
 
             # axes[j].legend(ncols=2)
     plt.tight_layout()
-    fig.savefig(f'{figure_folder}electrostatic-potential-profiles.tiff')
+    fig.savefig(f'{figure_folder}electrostatic-potential-profiles.tiff', dpi=300)
     return None
 
 def nitrate_density(edges, avg_density, std_density, colors, figure_folder):
@@ -60,11 +60,11 @@ def nitrate_density(edges, avg_density, std_density, colors, figure_folder):
             xlabels = [str(-x) for x in xticks]
             ax[j].set_xticks(xticks)
             ax[j].set_xticklabels(xlabels, fontsize=10)
-            ax[j].set_ylim(0, 2.0)
+            ax[j].set_ylim(0, 1.0)
 
             # ax[j].set_title(r'$\Delta\phi$' + f' = {pot_labels[j]}', fontsize=12, x=0.7, y=0.85)
             ax[j].set_xlabel(r'z ($\mathrm{\AA}$)', fontsize=12)
-            ax[0].set_ylabel(r'Density (1/$\mathrm{\AA^3}$)', fontsize=12)
+            ax[0].set_ylabel(r'Density (1/$\mathrm{nm^3}$)', fontsize=12)
             # ax[0].legend(fontsize=12)
             if i == 0:
                 ax[j].grid()
@@ -127,7 +127,7 @@ def full_density(edges, avg_density, std_density, colors, cat_labels, figure_fol
         # ax[0,0].set_title('1.0V Density Profiles', fontsize=14)
 
         plt.tight_layout()
-        plt.savefig(f'{figure_folder}all-density-profiles-surface-{pot_labels[j]}.tiff')
+        plt.savefig(f'{figure_folder}all-density-profiles-surface-{pot_labels[j]}.tiff', dpi=300)
     return None
 
 def rdf_layers(bins, rdf_avg, rdf_std, colors, figure_folder):
@@ -271,7 +271,7 @@ def hydrogen_density_profiles(edges, avg_density, std_density, figure_folder, co
 
             # ax[j].set_title(r'$\Delta\phi$' + f' = {pot_labels[j]}', fontsize=12, x=0.7, y=0.85)
             ax[j].set_xlabel(r'z ($\AA$)', fontsize=11)
-            ax[0].set_ylabel(r'Density (1/Å³)', fontsize=11)
+            ax[0].set_ylabel(r'Density (1/nm³)', fontsize=11)
             # ax[0].legend(fontsize=12)
             if i == 0:
                 ax[j].grid()
@@ -949,7 +949,7 @@ def read_and_plot_metal_comparison():
                         ax[p,j].grid()
 
         plt.tight_layout()
-        fig.savefig(f'{figure_folder}{figname}.tiff')
+        fig.savefig(f'{figure_folder}{figname}.tiff', dpi=300)
         return None
     
     colors = ["#1c4f7e", "#E05656",  "#4db4e8", "#8d0a0e"]

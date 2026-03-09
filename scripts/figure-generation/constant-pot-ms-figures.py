@@ -45,6 +45,7 @@ potentials = ['00','10','20']
 reps = ['0','1','2', '3', '4', '5', '6', '7', '8', '9']
 
 data_folder = f'../../data/'
+compressed_data_folder = f'../../data-ms-figs/constant-pot'
 figure_folder = f'../../figures/ms/'
 
 # create figure folder
@@ -57,32 +58,33 @@ def plot_cation_density_profiles(edges, avg_density, std_density, colors):
     pot_labels = ['0.0V', '1.0 V', '2.0 V']
 
     for i, cation in enumerate(cations):
-        for j, potential in enumerate(pot_labels):
-            ax[j].plot(edges[i,j,0], avg_density[i,j]['cation'], label=f'{cation}', color=colors[i])
-            ax[j].fill_between(edges[i,j,0], avg_density[i,j]['cation']-std_density[i,j]['cation'], avg_density[i,j]['cation']+std_density[i,j]['cation'], alpha=0.3, color=colors[i])
+        if cation == 'Cs' or cation == 'Li': # only plot Cs and Li for main text
+            for j, potential in enumerate(pot_labels):
+                ax[j].plot(edges[i,j,0], avg_density[i,j]['cation'], label=f'{cation}', color=colors[i])
+                ax[j].fill_between(edges[i,j,0], avg_density[i,j]['cation']-std_density[i,j]['cation'], avg_density[i,j]['cation']+std_density[i,j]['cation'], alpha=0.3, color=colors[i])
 
-            ax[j].set_xlim(1, -26)
-            xticks = np.arange(-25, 1, 5)
-            xlabels = [str(-x) for x in xticks]
-            ax[j].set_xticks(xticks)
-            ax[j].set_xticklabels(xlabels, fontsize=10)
-            # ax[j].set_ylim(0, 0.3)
-            # ax[j].set_yticks(np.arange(0, 0.1, 0.01))
-            # ax[j].set_yticklabels(np.round(np.arange(0, 0.1, 0.01), 3), fontsize=10)
+                ax[j].set_xlim(1, -26)
+                xticks = np.arange(-25, 1, 5)
+                xlabels = [str(-x) for x in xticks]
+                ax[j].set_xticks(xticks)
+                ax[j].set_xticklabels(xlabels, fontsize=10)
+                # ax[j].set_ylim(0, 0.3)
+                # ax[j].set_yticks(np.arange(0, 0.1, 0.01))
+                # ax[j].set_yticklabels(np.round(np.arange(0, 0.1, 0.01), 3), fontsize=10)
 
-            # ax[j].set_title(r'$\phi_{\mathrm{app}}$' + f' = {pot_labels[j]}', fontsize=12, x=0.74, y=0.85)
-            ax[j].set_xlabel(r'z ($\mathrm{\AA}$)', fontsize=12)
-            ax[0].set_ylabel(r'Cation Density (1/$\mathrm{nm^3}$)', fontsize=12)
-            # ax[0].legend(fontsize=12, ncols=1, loc='lower right')
-            if i == 0:
-                ax[j].grid()
+                # ax[j].set_title(r'$\phi_{\mathrm{app}}$' + f' = {pot_labels[j]}', fontsize=12, x=0.74, y=0.85)
+                ax[j].set_xlabel(r'z ($\mathrm{\AA}$)', fontsize=12)
+                ax[0].set_ylabel(r'Cation Density (1/$\mathrm{nm^3}$)', fontsize=12)
+                # ax[0].legend(fontsize=12, ncols=1, loc='lower right')
+                if i == 0:
+                    ax[j].grid()
     plt.tight_layout()
-    fig.savefig(f'{figure_folder}cation-density-profiles-surface.tiff', dpi=300)
+    fig.savefig(f'{figure_folder}cation-density-profiles-cs-and-li.tiff', dpi=300)
 
     return None
 
 def plot_water_potential(edges, avg_density, std_density, avg_epot, std_epot):
-    fig, ax1 = plt.subplots(1,1, figsize=(3.25,3.25))
+    fig, ax1 = plt.subplots(1,1, figsize=(3.75, 3.25))
     ax2 = ax1.twinx()
     j = 1
     colors1 = ["#0c2944", "#0254A1", "#3d8ee0", "#9acaf7"]
@@ -163,9 +165,9 @@ def frac_ion_pairs(no3_pairing_avg, no3_pairing_std):
     ax.scatter(x_array, no3_pairing_avg[:,0,2,0], label=f'Bulk layer', color=colors[3], marker=markers[0])
     ax.errorbar(x_array, no3_pairing_avg[:,0,2,0], yerr=no3_pairing_std[:,0,2,0], fmt=markers[0], capsize=5, color=colors[3], markersize=2)
 
-    for j, pot in enumerate(potentials):
-        ax.scatter(x_array, no3_pairing_avg[:,j,0,0], label=f'{pot_labels[j]} - Stern', color=colors[j], marker=markers[j+1])
-        ax.errorbar(x_array, no3_pairing_avg[:,j,0,0], yerr=no3_pairing_std[:,j,0,0], fmt=markers[j+1], capsize=5, color=colors[j])
+    # for j, pot in enumerate(potentials):
+    #     ax.scatter(x_array, no3_pairing_avg[:,j,0,0], label=f'{pot_labels[j]} - Stern', color=colors[j], marker=markers[j+1])
+    #     ax.errorbar(x_array, no3_pairing_avg[:,j,0,0], yerr=no3_pairing_std[:,j,0,0], fmt=markers[j+1], capsize=5, color=colors[j])
 
 
     ax.set_ylim(0,0.65)
@@ -181,7 +183,7 @@ def frac_ion_pairs(no3_pairing_avg, no3_pairing_std):
     ax.grid()
     # ax.legend(ncols=2, fontsize=10, frameon=True, loc='upper left')
     plt.tight_layout()
-    fig.savefig(f'{figure_folder}ion-pair-fraction-stern.tiff', dpi=300)
+    fig.savefig(f'{figure_folder}ion-pair-fraction-bulk.tiff', dpi=300)
     return None
 
 def nitrate_free_energy_inset(edges, avg_pmf):
@@ -406,10 +408,20 @@ def load_ion_pairing(data_folder, cations, potentials, reps):
 
 
 def main():
-    # load data
-    edges, avg_density, std_density, avg_pmf, std_pmf, avg_delta_f_ads, std_delta_f_ads = load_density(data_folder, cations, potentials, reps)
-    avg_epot, std_epot = load_epot(data_folder, cations, potentials, reps)
-    bins, rdf_avg, rdf_std, pmf_avg, pmf_std, no3_pairing_avg, no3_pairing_std = load_ion_pairing(data_folder, cations, potentials, reps)
+    # load data for figures
+    avg_density = np.load(f'{compressed_data_folder}/avg_density.npy', allow_pickle=True)
+    std_density = np.load(f'{compressed_data_folder}/std_density.npy', allow_pickle=True)
+    edges = np.load(f'{compressed_data_folder}/edges.npy', allow_pickle=True)
+    avg_epot = np.load(f'{compressed_data_folder}/avg_epot.npy', allow_pickle=True)
+    std_epot = np.load(f'{compressed_data_folder}/std_epot.npy', allow_pickle=True)
+    bins = np.load(f'{compressed_data_folder}/bins.npy', allow_pickle=True)
+    rdf_avg = np.load(f'{compressed_data_folder}/rdf_avg.npy', allow_pickle=True)
+    rdf_std = np.load(f'{compressed_data_folder}/rdf_std.npy', allow_pickle=True)
+    no3_pairing_avg = np.load(f'{compressed_data_folder}/no3_pairing_avg.npy', allow_pickle=True)
+    no3_pairing_std = np.load(f'{compressed_data_folder}/no3_pairing_std.npy', allow_pickle=True)
+    avg_delta_f_ads = np.load(f'{compressed_data_folder}/avg_delta_f_ads.npy', allow_pickle=True)
+    std_delta_f_ads = np.load(f'{compressed_data_folder}/std_delta_f_ads.npy', allow_pickle=True)
+    avg_pmf = np.load(f'{compressed_data_folder}/avg_pmf.npy', allow_pickle=True)
 
     # color map
     colors = ["#1c4f7e", "#E05656",  "#4db4e8", "#8d0a0e"]

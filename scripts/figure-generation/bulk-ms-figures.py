@@ -195,13 +195,21 @@ def read_transport_data(data_path):
 
 def make_all_figures():
     transport_data_path = '../../data'
+    compressed_data_path = '../../data-ms-figs/bulk'
     fig_folder = '../../figures/ms/'
     # make sure the figure folder exists
     if not os.path.exists(fig_folder):
         os.makedirs(fig_folder)
 
-    # transport property based figures
-    _, _, avg_cond, std_cond, avg_D_el, std_D_el, _, std_diff, avg_tn, std_tn, diff_intercepts = read_transport_data(transport_data_path)
+    # save needed data for the figures
+    avg_cond = np.load(f'{compressed_data_path}/avg_cond.npy', allow_pickle=True)
+    std_cond = np.load(f'{compressed_data_path}/std_cond.npy', allow_pickle=True)
+    avg_D_el = np.load(f'{compressed_data_path}/avg_D_el.npy', allow_pickle=True)
+    std_D_el = np.load(f'{compressed_data_path}/std_D_el.npy', allow_pickle=True)
+    diff_intercepts = np.load(f'{compressed_data_path}/avg_diff.npy', allow_pickle=True)
+    std_diff = np.load(f'{compressed_data_path}/std_diff.npy', allow_pickle=True)
+    avg_tn = np.load(f'{compressed_data_path}/avg_tn.npy', allow_pickle=True)
+    std_tn = np.load(f'{compressed_data_path}/std_tn.npy', allow_pickle=True)
 
     conductivity(avg_cond, std_cond, fig_folder)
     self_diffusion(diff_intercepts, std_diff, fig_folder)

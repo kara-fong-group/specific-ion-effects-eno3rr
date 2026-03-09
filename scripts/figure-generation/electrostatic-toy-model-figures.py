@@ -28,7 +28,7 @@ def electric_field_map(figname):
 
     charges = [bulk_free, bulk_paired, image_free, image_paired]
 
-    fig, axes = plt.subplots(2,2, figsize=(3.5, 3), sharex=True, sharey=True)
+    fig, axes = plt.subplots(2,2, figsize=(5, 4.5), sharex=True, sharey=True)
     axes = axes.flatten()
     for i, charge in enumerate(charges):
         ax = axes[i]
@@ -60,26 +60,26 @@ def electric_field_map(figname):
         ticks = np.linspace(-5e-10, 5e-10, 3)
         ax.set_xticks(ticks)
         tick_labels = [f'-5', '0', f'5']
-        ax.set_xticklabels(tick_labels, fontsize=10)
+        ax.set_xticklabels(tick_labels, fontsize=12)
 
         ticks = np.linspace(-5e-10, 5e-10, 3)
         ax.set_yticks(ticks)
         tick_labels = [f'-5', '0', f'5']
-        ax.set_yticklabels(tick_labels, fontsize=10)
+        ax.set_yticklabels(tick_labels, fontsize=12)
 
-    axes[0].set_ylabel(r"y, $\mathrm{\AA}$", fontsize=12)
-    axes[3].set_xlabel(r"z, $\mathrm{\AA}$", fontsize=12)
+    axes[0].set_ylabel(r"y, $\mathrm{\AA}$", fontsize=14)
+    axes[3].set_xlabel(r"z, $\mathrm{\AA}$", fontsize=14)
 
-    axes[2].set_xlabel(r"z, $\mathrm{\AA}$", fontsize=12)
-    axes[2].set_ylabel(r"y, $\mathrm{\AA}$", fontsize=12)
+    axes[2].set_xlabel(r"z, $\mathrm{\AA}$", fontsize=14)
+    axes[2].set_ylabel(r"y, $\mathrm{\AA}$", fontsize=14)
     plt.tight_layout()
 
     fig.savefig(figname, dpi=300)
 
     # add a colorbar separately
-    fig, ax = plt.subplots(1,1, figsize=(4.5,2.5))
+    fig, ax = plt.subplots(1,1, figsize=(6.0,3.5))
     cbar = fig.colorbar(last_heat, ax=ax, orientation="vertical", aspect=10, pad=0.04)
-    cbar.set_label("Electric field strength |E| (N/C)", fontsize=12)
+    cbar.set_label("Electric field strength |E| (N/C)", fontsize=14)
     plt.tight_layout()
     fig.savefig("../../figures/ms/efield_magnitude_colorbar.tiff", dpi=300)
     return None

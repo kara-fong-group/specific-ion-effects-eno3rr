@@ -393,7 +393,7 @@ def fraction_paired(ion_pair_dists, no3_dists, cip, ssip, cutoffs):
             no3_pairs[i,j] = np.nanmean([no3_pairing[x,i,j] for x in range(len(ion_pair_dists[:,0,0]))])
                                      
     n_nitrate_std = np.std(n_nitrate, axis=0)
-    n_nitrate = np.mean(n_nitrate, axis=0)
+    n_nitrate = np.mean(n_nitrate, axis=0) # n_nitrate = [stern, diffuse, bulk]
 
     print(f'pairing data: {no3_pairs}')
     print(f'number of nitrates: {n_nitrate}, std: {n_nitrate_std}')

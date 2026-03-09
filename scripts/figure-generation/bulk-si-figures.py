@@ -173,6 +173,25 @@ def conductivity_com_vs_sol(conc_vals, avg_cond_all, std_cond_all, com_avg_cond_
     fig.savefig(f'{path}conductivity-com-vs-sol.tiff', dpi=300)
     return None
 
+def l_plus_minus(conc_vals, avg_lij_all, std_lij_all, path):
+    # plot conductivity comparison
+    fig, ax = plt.subplots(1, 1, figsize=[4.5,4.7])
+    for k, cation in enumerate(cations):
+        ax.plot(conc_vals, avg_lij_all[k,:], marker=markers[k], color=colors[k], label=f'{cation} - COM', linestyle='-', alpha=0.6, linewidth=2)
+        ax.errorbar(conc_vals, avg_lij_all[k,:], yerr=std_lij_all[k,:], fmt=markers[k], color=colors[k], capsize=5)
+
+    ax.set_xlabel('Concentration (mol/kg)', fontsize=14)
+    ax.set_ylabel(r'$L^{+-}$ (mS/cm)', fontsize=14)
+    ax.set_ylim(-2, 13)
+    ax.set_yticks(np.arange(0, 13, 2))
+    ax.set_yticklabels([f'{y:.0f}' for y in np.arange(0, 13, 2)], fontsize=12)
+    ax.set_xticks(np.arange(0, 1.1, 0.2))
+    ax.set_xticklabels([f'{x:.1f}' for x in np.arange(0, 1.1, 0.2)], fontsize=12)
+    ax.grid()
+    plt.tight_layout()
+    fig.savefig(f'{path}l-plus-minus.tiff', dpi=300)
+    return None
+
 def lij_com_vs_sol(conc_vals, avg_lij_all, std_lij_all, com_avg_lij_all, com_std_lij_all, path):
     # plot the lij values
     fig, ax = plt.subplots(1, 3, figsize=[7, 3.25])
@@ -448,6 +467,7 @@ def main():
     transference(conc_vals, avg_tn_all, std_tn_all, fig_folder)
     conductivity_com_vs_sol(conc_vals, avg_cond_all, std_cond_all, com_avg_cond_all, com_std_cond_all, fig_folder)
     lij_com_vs_sol(conc_vals, avg_lij_all, std_lij_all, com_avg_lij_all, com_std_lij_all, fig_folder)
+    l_plus_minus(conc_vals, avg_lij_all[:,:,4], std_lij_all[:,:,4], fig_folder)
 
     # finite size effects
     concentrations = ['1M', '0.5M', '0.1M', '0.01M']
