@@ -1,14 +1,16 @@
-## Data Repositiory for Beyond Interfacial Structure: Ion Transport Mediates Cation Effects in Electrochemical Nitrate Reduction -- {insert DOI}
+## Data Repositiory for Beyond Interfacial Structure: Ion Transport Mediates 
+## Cation Effects in Electrochemical Nitrate Reduction -- {insert DOI}
 Authors: Madeline A. Murphy, Kara D. Fong
-Date:
+Date: last updated March 2026
 
 ### Contents:
-#### data
-Bulk Electrolyte
+#### data - ms figs
+Includes all the data arrays necessary for figure generation. Raw data available upon request.
 
 
-#### figures
-Includes all the final figures in the manuscript and supporting information, separated accordingly.
+#### figures - compressed
+Includes all the final figures in the manuscript and 
+supporting information, separated accordingly.
     complete-ms -- final .png files that appear in the manuscript
     complete-si -- final .png files that appear in the si
 
@@ -18,56 +20,94 @@ Includes all the final figures in the manuscript and supporting information, sep
 #### scripts
 ##### analysis:
 Bulk Electrolyte
-    rdfanalysis.py -- script to generate radial distribution functions between atom types from the simulations trajectories.
+    rdfanalysis.py -- script to generate radial distribution functions
+    between atom types from the simulations trajectories.
 
-    transport_analysis.py -- script containing functions essential to performing the analysis of transport coefficients from the Onsager transport framework.
+    transport_analysis.py -- script containing functions essential to
+    performing the analysis of transport coefficients from the Onsager
+    transport framework.
 
-    transport_analysis.ipynb -- jupyter notebook to analyze each simulation, fitting the MSDs of the trajectories to conpute transport coefficients. 
+    transport_analysis.ipynb -- jupyter notebook to analyze each simulation
+    fitting the MSDs of the trajectories to conpute transport coefficients. 
 
 Constant Potential
-    create-lammps-dump.py -- the method used to visualize the charge on each electrode dynamically in time with VMD requires a lammps dump file with trajectories and charges. This file combines the .dcd trajectory file with the .dat charges files into one dump file.
+    create-lammps-dump.py -- the method used to visualize the charge on each
+    electrode dynamically in time with VMD requires a lammps dump file with
+    trajectories and charges. This file combines the .dcd trajectory file with the .dat charges files into one dump file.
 
     ion_pairing.py -- computes the fraction of nitrate ions paired in each layer
 
-    layer-separation.py -- computes the the total charge density of ions as well as the charge density on the electrode. Combines the two charge densities to derive the electric field and electrostatic potential of each cell. Then, determines the EDL cutoffs from the electrostatic potential profile of each cell.
+    layer-separation.py -- computes the the total charge density of ions as
+    well as the charge density on the electrode. Combines the two charge
+    densities to derive the electric field and electrostatic potential of
+    each cell. Then, determines the EDL cutoffs from the electrostatic
+    potential profile of each cell.
 
     oxygen-hydrogen-rdf.py -- computes the NO3_oxygen - H2O_hydrogen RDF.
 
     rdf-analysis.py -- computes the NO3_oxygen - Cation RDF.
 
-    replicates_analysis.py -- preforms the bulk of the trajectory analysis. Computes density profiles of each atom type and ion pairing statistics for no3 - cation pairs.
+    replicates_analysis.py -- preforms the bulk of the trajectory analysis.
+    Computes density profiles of each atom type and ion pairing statistics
+    for no3 - cation pairs.
 
     water-rdf.py -- computes the H2O_oxygen - H2O_oxygen RDF.
 
 ##### example-input-files: 
 Includes example input files and starting structures for each simulation type.
 Bulk Electrolyte -- Cs, 1.0M bulk electrolyte
-        system.data -- input data file, includes the starting structure of the simulation cell, including atom types and partial charges.
-        system-npt.in -- LAMMPS inpute file for performing the NPT density equilibration simulation
-        system-nvt.in -- LAMMPS inpute file for performing the NVT production simulation
-        system.in.settings -- settings file including force field information for each atom and bond
+        system.data -- input data file, includes the starting structure of
+        the simulation cell, including atom types and partial charges
+        
+        system-npt.in -- LAMMPS inpute file for performing the NPT density
+        equilibration simulation
+        
+        system-nvt.in -- LAMMPS inpute file for performing the NVT production
+        simulation
+        
+        system.in.settings -- settings file including force field information
+        for each atom and bond
 
         init.xyz -- .xyz file of the starting structure
     
-Constant Potential -- all constant potential simulations will have the same input file names.
+Constant Potential -- all constant potential simulations will have the same
+input file names.
     Files and description:
-        system.data -- input data file, includes the starting structure of the simulation cell, including atom types and partial charges.
+        system.data -- input data file, includes the starting structure of
+        the simulation cell, including atom types and partial charges.
+        
         system.in -- LAMMPS inpute file for performing the simulation
-        system.in.settings -- settings file including force field information for each atom and bond
+        
+        system.in.settings -- settings file including force field information
+        for each atom and bond
 
     init.xyz -- .xyz file of the starting structure
 
     These 4 files are included for each CPMD simulation type:
-        cpmd-lj -- Cs, 1.0V, rep0 with a Lennard-Jones potential describing the metal
-        cpmd-wca -- Cs, 1.0V, rep0 with a Weeks-Chandler Anderson truncated potential describing the metal
+        cpmd-lj -- Cs, 1.0V, rep0 with a Lennard-Jones potential describing
+        the metal
+        
+        cpmd-wca -- Cs, 1.0V, rep0 with a Weeks-Chandler Anderson truncated
+        potential describing the metal
+        
         piston -- Cs piston simulation 
 
 
 ##### figure-generation:
 Bulk Electrolyte
-    bulk-make-figures.py -- script to generate all Bulk Electrolyte figures for the main text
-    bulk-make-si-figures.py -- script to generate all Bulk Electrolyte figures for the si
+    bulk-make-figures.py -- script to generate all Bulk Electrolyte figures
+    for the main text
+    
+    bulk-make-si-figures.py -- script to generate all Bulk Electrolyte
+    figures for the si
 
 Constant Potential
-    constant-pot-make-figures.py -- script to generate all Constant Potential figures for the main text
-    constant-pot-make-si-figures.py -- script to generate all Constant Potential figures for the si
+    constant-pot-make-figures.py -- script to generate all Constant Potential
+    figures for the main text
+    
+    constant-pot-make-si-figures.py -- script to generate all Constant
+    Potential figures for the si
+
+Image Charges
+    electrostatic-toy-model.py -- script to generate the image charge figures 
+    in the main text
