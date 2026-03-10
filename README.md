@@ -20,6 +20,7 @@ supporting information, separated accordingly.
 
 #### scripts
 ##### analysis:
+
 Bulk Electrolyte
 
     rdfanalysis.py -- script to generate radial distribution functions
@@ -36,7 +37,8 @@ Constant Potential
 
     create-lammps-dump.py -- the method used to visualize the charge on each
     electrode dynamically in time with VMD requires a lammps dump file with
-    trajectories and charges. This file combines the .dcd trajectory file with the .dat charges files into one dump file.
+    trajectories and charges. This file combines the .dcd trajectory file with 
+    the .dat charges files into one dump file.
 
     ion_pairing.py -- computes the fraction of nitrate ions paired in each layer
 
@@ -58,8 +60,11 @@ Constant Potential
 
 ##### example-input-files: 
 Includes example input files and starting structures for each simulation type.
+
 Bulk Electrolyte -- Cs, 1.0M bulk electrolyte
 
+    Files and description:
+    
         system.data -- input data file, includes the starting structure of
         the simulation cell, including atom types and partial charges
         
