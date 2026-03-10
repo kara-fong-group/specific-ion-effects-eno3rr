@@ -81,7 +81,7 @@ input file names.
         system.in.settings -- settings file including force field information
         for each atom and bond
 
-    init.xyz -- .xyz file of the starting structure
+        init.xyz -- .xyz file of the starting structure
 
     These 4 files are included for each CPMD simulation type:
         cpmd-lj -- Cs, 1.0V, rep0 with a Lennard-Jones potential describing
