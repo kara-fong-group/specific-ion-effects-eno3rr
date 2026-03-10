@@ -5,10 +5,12 @@ Date: last updated March 2026
 
 ### Contents:
 #### data - ms figs
+
 Includes all the data arrays necessary for figure generation. Raw data available upon request.
 
 
 #### figures - compressed
+
 Includes all the final figures in the manuscript and 
 supporting information, separated accordingly.
 
@@ -64,7 +66,7 @@ Includes example input files and starting structures for each simulation type.
 Bulk Electrolyte -- Cs, 1.0M bulk electrolyte
 
     Files and description:
-    
+
         system.data -- input data file, includes the starting structure of
         the simulation cell, including atom types and partial charges
         
@@ -105,6 +107,7 @@ input file names.
 
 
 ##### figure-generation:
+
 Bulk Electrolyte
     bulk-make-figures.py -- script to generate all Bulk Electrolyte figures
     for the main text
