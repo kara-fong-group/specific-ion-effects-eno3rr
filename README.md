@@ -11,6 +11,7 @@ Includes all the data arrays necessary for figure generation. Raw data available
 #### figures - compressed
 Includes all the final figures in the manuscript and 
 supporting information, separated accordingly.
+
     complete-ms -- final .png files that appear in the manuscript
     complete-si -- final .png files that appear in the si
 
@@ -20,6 +21,7 @@ supporting information, separated accordingly.
 #### scripts
 ##### analysis:
 Bulk Electrolyte
+
     rdfanalysis.py -- script to generate radial distribution functions
     between atom types from the simulations trajectories.
 
@@ -31,6 +33,7 @@ Bulk Electrolyte
     fitting the MSDs of the trajectories to conpute transport coefficients. 
 
 Constant Potential
+
     create-lammps-dump.py -- the method used to visualize the charge on each
     electrode dynamically in time with VMD requires a lammps dump file with
     trajectories and charges. This file combines the .dcd trajectory file with the .dat charges files into one dump file.
@@ -56,6 +59,7 @@ Constant Potential
 ##### example-input-files: 
 Includes example input files and starting structures for each simulation type.
 Bulk Electrolyte -- Cs, 1.0M bulk electrolyte
+
         system.data -- input data file, includes the starting structure of
         the simulation cell, including atom types and partial charges
         
@@ -72,7 +76,9 @@ Bulk Electrolyte -- Cs, 1.0M bulk electrolyte
     
 Constant Potential -- all constant potential simulations will have the same
 input file names.
+
     Files and description:
+
         system.data -- input data file, includes the starting structure of
         the simulation cell, including atom types and partial charges.
         
