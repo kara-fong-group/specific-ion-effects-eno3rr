@@ -1,0 +1,73 @@
+# distribute electrode atoms among all processors:
+#if "$(extract_setting(world_size) % 2) == 0" then "processors * * 2"
+
+# ----------------- Init Section -----------------
+
+units real
+timestep 1.0
+dimension 3
+atom_style full
+boundary p p f
+neighbor 2.0 bin
+bond_style harmonic
+angle_style harmonic
+dihedral_style  opls
+pair_style lj/cut/coul/long 10.0 10.0
+pair_modify shift yes mix arithmetic
+neigh_modify every 1 delay 0 check no
+kspace_style pppm 1.0e-5
+kspace_modify slab 3.0
+
+# read in coordinate file
+read_data "system.data"
+
+# import non-bonded (LJ) interaction parameters
+include "system.in.settings"
+
+# group by type
+group electrolyte type 1 2 3 4 5
+group gSPCE type  1  2
+group cation type 3
+group anion type 4 5
+group bot type 6
+group top type 7
+
+# minimize electrolyte
+fix fix_top top setforce 0.0 0.0 0.0
+fix fix_bot bot setforce 0.0 0.0 0.0
+min_style cg
+minimize 1.0e-5 1.0e-7 1000 10000
+write_dump all xyz end_minimize.xyz modify sort id
+reset_timestep 0
+unfix fix_bot
+
+variable t equal step
+
+fix fShakeSPCE gSPCE shake 0.0001 100 0 b 1 a 1
+
+compute top_height top reduce min z
+compute bot_height bot reduce max z
+variable height_diff equal c_top_height-c_bot_height
+
+dump unwrapped all dcd 1000 npt_unwrapped_$t.dcd 
+dump_modify unwrapped unwrap yes 
+thermo_style custom time step temp press vol lx ly lz density pe ke etotal v_height_diff spcpu cpuremain
+thermo_modify flush yes
+thermo 1000
+restart 10000 run1.restart run2.restart
+
+fix NVT electrolyte nvt temp 298 298 100.0 
+
+variable n_metal equal count(bot)
+variable surface_area equal cella*cellb
+variable pressure equal 1.0 # atm
+variable conversion equal 1.458*(10^-5) # convert atm to kcal/mol-A^3
+variable force_bot equal ${pressure}*${conversion}*${surface_area}/${n_metal}
+variable force_top equal -${pressure}*${conversion}*${surface_area}/${n_metal}
+
+fix center_zbot bot setforce 0.0 0.0 NULL
+fix ext_pbot bot addforce 0.0 0.0 v_force_bot 
+fix piston bot rigid/nve single torque 1 off off off    # Integrate the position of the bottom electrode as a single rigid body - no thermostat. All torque components are set off to avoid rotating the electrode.
+run 100000
+write_data end_piston.data
+write_dump all xyz end_piston.xyz modify sort id

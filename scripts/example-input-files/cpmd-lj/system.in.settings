@@ -1,0 +1,20 @@
+bond_coeff   1           1000.0  1.0 
+# explanation:  http://lammps.sandia.gov/doc/bond_harmonic.html
+
+angle_coeff  1         1000.0  109.47
+# explanation:  http://lammps.sandia.gov/doc/angle_harmonic.html
+
+pair_coeff   1 1    0.1553  3.166 
+pair_coeff   2 2    0.0     0.0
+pair_coeff   1 2    0.0     0.0
+# explanation:  http://lammps.sandia.gov/doc/pair_charmm.html
+
+pair_coeff 3 3  0.1 3.884
+# \epsilon in kcal/mol
+pair_coeff 4 4 0.2000093865 3.9
+pair_coeff 5 5 0.1550114449  3.154
+bond_coeff 2 634.20 1.27
+angle_coeff 2 120.8174 120.00
+dihedral_coeff 1 0.0 2.0 0.0 0.0
+pair_coeff   6  6     5.29   2.951
+pair_coeff   7  7     5.29   2.951
